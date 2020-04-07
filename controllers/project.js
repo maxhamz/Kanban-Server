@@ -285,8 +285,18 @@ class TaskController {
                 ]
             })
             .then(response => {
-                console.log("FETCHED ALL TASKS");
-                return res.status(200).json(response)
+                console.log("FETCHED ALL TASKS, NOW SORTING THEM");
+                let sorted = {
+                    "backlog": [],
+                    "pending": [],
+                    "review": [],
+                    "done": []
+                }
+                response.forEach(el => {
+                    sorted[el.category].push(el)
+                })
+                // console.log(sorted);
+                return res.status(200).json(sorted)
             })
             .catch(err => {
                 next(err)
