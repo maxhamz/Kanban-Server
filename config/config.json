@@ -2,7 +2,7 @@
   "development": {
     "username": "postgres",
     "password": "jajabo",
-    "database": "db-kanban-r",
+    "database": "db-kanban-r1",
     "host": "localhost",
     "dialect": "postgres"
   },

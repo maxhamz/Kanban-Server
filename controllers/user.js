@@ -94,7 +94,9 @@ class UserController {
                         accessToken = createToken(payload)
 
                         return res.status(200).json({
-                            access_token: accessToken
+                            access_token: accessToken,
+                            id: response.id,
+                            email: response.email
                         })
 
                     } else {
@@ -154,7 +156,9 @@ class UserController {
                 accessToken = createToken(payload)
 
                 return res.status(200).json({
-                    access_token: accessToken
+                    access_token: accessToken,
+                    id: response.id,
+                    email: response.email
                 })
             })
             .catch(err => {

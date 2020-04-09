@@ -50,7 +50,12 @@ class TaskController {
                         ]
                     }
                 }
-            ]
+            ],
+            attributes: {
+                include: [
+                    'id'
+                ]
+            }
         })
         .then(response => {
 
@@ -102,26 +107,25 @@ class TaskController {
     static addProject(req, res, next) {
         console.log("ADDING NEW PROJECT");
         console.log(req.body);
+        console.log(req.decoded);
         return Project.create({
             UserId: req.decoded.id,
             title: req.body.title
         })
         .then(response => {
             console.log("PROJECT CREATED");
-            console.log(response);
             user_id = response.UserId
             project_id = response.id
 
             
             return ProjectUser.create({
                 UserId: user_id,
-                ProjectId: project_id,
-                include: [User, Project]
+                ProjectId: project_id
             })
         })
         .then(response => {
             console.log("PROJECT USER CREATED");
-            console.log(response);
+            // console.log(response);
             return res.status(201).json(response)
         })
         .catch(err => {
@@ -165,7 +169,6 @@ class TaskController {
         })
         .then(response => {
             console.log("WHAT'S VERDICT2");
-            console.log(response);
             if (response) {
                 throw new customError(400, 'DUPLICATE ASSIGNMENT')
             } else {
@@ -282,7 +285,12 @@ class TaskController {
                 include: [Project],
                 order: [
                     ['createdAt', 'ASC']
-                ]
+                ],
+                attributes: {
+                    include: [
+                        'ProjectId'
+                    ]
+                }
             })
             .then(response => {
                 console.log("FETCHED ALL TASKS, NOW SORTING THEM");
@@ -335,6 +343,8 @@ class TaskController {
 
         project_id = +req.params.projectid
         console.log("ADD TASK 2 PROJECT");
+        console.log(req.params);
+        console.log(req.body);
         return Project.findOne({
                 where: {
                     id: project_id
@@ -345,10 +355,9 @@ class TaskController {
                     console.log("PROJECT FOUND, NOW ADDING");
                     return Task.create({
                         title: req.body.title,
-                        category: "pending",
+                        category: 'pending',
                         ProjectId: response.id
                     })
-
                 } else {
                     throw new customError(404, 'NOT FOUND')
                 }
@@ -367,10 +376,8 @@ class TaskController {
     static updateTask(req, res, next) {
 
         console.log("UPDATING A PROJECT'S TASK");
-        // console.log(req.params);
         project_id = +req.params.projectid
         task_id = +req.params.taskid
-        // console.log(project_id, task_id);
         return Project.findOne({
                 where: {
                     id: project_id

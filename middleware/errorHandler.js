@@ -2,7 +2,7 @@ const { Sequelize } = require('../models');
 
 function errorHandler(err, req, res, next) {
     console.log(">>> ENTERING ERROR VALIDATIONS");
-    // console.log(err);
+    console.log(err);
     if (err instanceof Sequelize.ValidationError) {
         let arr = [];
         err.errors.forEach(item => {
