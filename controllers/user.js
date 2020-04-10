@@ -142,7 +142,7 @@ class UserController {
                 } else {
                     return User.create({
                         email: emailAddress,
-                        password: process.env.SECRET
+                        password: hashPassword(process.env.SECRET)
                     })
                 }
             })
