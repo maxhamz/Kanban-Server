@@ -42,11 +42,11 @@ module.exports = function (io) {
         })
 
 
-        //FETCHING NEW PROJECT
-        socket.on('getProjects', (payload) => {
-            console.log("SHOWING ALL PROJECTS");
-            io.emit('getProjects2', payload)
-        }) 
+        // //FETCHING NEW PROJECT
+        // socket.on('getProjects', (payload) => {
+        //     console.log("SHOWING ALL PROJECTS");
+        //     io.emit('getProjects2', payload)
+        // }) 
 
         
 
@@ -74,12 +74,12 @@ module.exports = function (io) {
         })
 
 
-        //FETCH TASKS
-        socket.on('getTasks', (payload) => {
-            console.log("TASKS UPLOADED");
+        // //FETCH TASKS
+        // socket.on('getTasks', (payload) => {
+        //     console.log("TASKS UPLOADED");
             
-            io.emit('getTasks2', payload)
-        })
+        //     io.emit('getTasks2', payload)
+        // })
 
         
 
