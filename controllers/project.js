@@ -50,7 +50,12 @@ class TaskController {
                         ]
                     }
                 }
-            ]
+            ],
+            attributes: {
+                include: [
+                    'id'
+                ]
+            }
         })
         .then(response => {
 
@@ -282,7 +287,12 @@ class TaskController {
                 include: [Project],
                 order: [
                     ['createdAt', 'ASC']
-                ]
+                ],
+                attributes: {
+                    include: [
+                        'id'
+                    ]
+                }
             })
             .then(response => {
                 console.log("FETCHED ALL TASKS, NOW SORTING THEM");
