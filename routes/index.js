@@ -8,7 +8,7 @@ router.get('/', (req, res, next) => {
 
 router.use("/users", userRoute)
 router.use('/projects', projectRoute)
-
+let myRoom = null
 module.exports = function (io) {
     //Socket.IO
     io.on('connection', function (socket) {
@@ -42,6 +42,19 @@ module.exports = function (io) {
         })
 
 
+        // ENTERING A PROJECT AS ROOM
+        socket.on('join', (payload) => {
+            let rm = `project-${payload.id}`
+            socket.join(rm, function() {
+                var nsp = io.of('room-1')
+                // let rooms = `NOW ENETRING ROOM-${rm}`
+                // myRoom = io.sockets.manager.roomClients[socket.id] //from docs
+                myRoom = `project-${payload.id}`;
+                socket.emit('join2', rm)
+            })
+        })
+
+
         //FETCHING NEW PROJECT
         socket.on('getProjects', (payload) => {
             console.log("SHOWING ALL PROJECTS");
@@ -57,6 +70,8 @@ module.exports = function (io) {
             io.emit('added_project', payload)
         })
 
+
+
         //INVITED NEW MEMBER
         socket.on('new_member', (payload) => {
             console.log(">>>> HI HO, NEW MEMBER!");
@@ -64,6 +79,13 @@ module.exports = function (io) {
             io.emit('new_member2', payload)
         })
 
+        
+        // FIRED A MEMBER
+        socket.on('member_fired', (payload) => {
+            console.log(">>>> ADIOS MEMBER!");
+            console.log(payload);
+            io.emit('member_fired2', payload)
+        })
 
 
         //DELETED A PROJECT
@@ -78,7 +100,8 @@ module.exports = function (io) {
         socket.on('getTasks', (payload) => {
             console.log("TASKS UPLOADED");
             
-            io.emit('getTasks2', payload)
+            // io.emit('getTasks2', payload)
+            io.in(myRoom).emit('getTasks2', payload)
         })
 
         
@@ -88,14 +111,17 @@ module.exports = function (io) {
         socket.on("new_task", (payload) => {
             console.log(">>>> TASK FROM OVEN!");
             console.log(payload);
-            io.emit('added_task', payload)
+            // io.emit('added_task', payload)
+            console.log(myRoom);
+            io.in(myRoom).emit('added_task', payload)
         });
 
 
         // UPDATE TASK
         socket.on('task_update', (payload) => {
             console.log(`TASK ${payload.title} HAS BEEN UPDATED`);
-            io.emit('updated_task', payload)
+            // io.emit('updated_task', payload)
+            io.in(myRoom).emit('updated_task', payload)
         })
 
 
@@ -103,7 +129,8 @@ module.exports = function (io) {
         socket.on("task_deleted", (payload) => {
             console.log(">>>> TASK DELETED!");
             console.log(payload);
-            io.emit('deleted_task', 'PROJECT DELETED')
+            // io.emit('deleted_task', 'TASK DELETED')
+            io.in(myRoom).emit('deleted_task', payload)
         });
 
 

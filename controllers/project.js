@@ -136,6 +136,27 @@ class TaskController {
     }
 
 
+    static showMembers(req, res, next) {
+        console.log("SHOWING ALL MEMBERS OF A PROJECT");
+        project_id = +req.params.id
+        return Project.findByPk(project_id, {
+            include: [
+                {model: User}
+            ]
+        })
+        .then(response => {
+            if(response) {
+                return res.status(200).json(response.Users)
+            } else {
+                throw new customError(404, 'NOT FOUND')
+            }
+        })
+        .catch(err => {
+            return next(err)
+        })
+    }
+
+
     static invite(req, res, next) {
         console.log("INVITE MEMBER FROM CONTROLLER");
         console.log(req.body);
@@ -189,6 +210,61 @@ class TaskController {
 
 
 
+    }
+
+
+    static fire(req, res, next) {
+        console.log(req.params);
+
+        project_id = +req.params.id
+
+        console.log(req.body);
+
+        let member = req.body.member_email
+        let projectTitle=''
+
+        return User.findOne({
+            where: {
+                email: member
+            }
+        })
+        .then(response => {
+            console.log(response.dataValues);
+            if(response) {
+                user_id = response.id
+                return ProjectUser.findOne({
+                    where: {
+                        ProjectId: project_id,
+                        UserId: user_id
+                    },
+                    include: [
+                        {model: Project}
+                    ]
+                })
+            } else {
+                throw new customError(404, 'NOT FOUND')
+            }
+        })
+        .then(response => {
+            if(response) {
+                projectTitle = response.Project.title
+                return ProjectUser.destroy({
+                    where: {
+                        ProjectId: project_id,
+                        UserId: user_id
+                    }
+                })
+            } else {
+                throw new customError(404, 'NOT FOUND')
+            }
+        })
+        .then(_ => {
+            console.log("DELETE MEMBER SUCCESS");
+            return res.status(200).json({message: `${member} DROPPED FROM PROJECT# ${project_id}: ${projectTitle}`})
+        })
+        .catch(err => {
+            return next(err)
+        })
     }
 
 
